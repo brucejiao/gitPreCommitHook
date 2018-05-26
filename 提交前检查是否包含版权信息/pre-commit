@@ -1,0 +1,193 @@
+#!/bin/sh
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#2018/04/28 16:49
+# To enable this hook, rename this file to "pre-commit".
+
+#添加的文件头
+copyright="Copyright (C) DICP-CMC Innovation Institute of Medicine."
+
+#暂存区于服务器比较是否包含：Copyright (C) DICP-CMC Innovation Institute of Medicine.
+#has_copyright=$(git diff --cached | grep "${copyright}")
+cached=$(git diff --cached)
+
+#获取提交数据路径
+file_path=$(git diff --cached --name-only)
+
+#项目根目录
+project_path="E://F//gitHooks//addWebhook"  
+
+#扫描文件后缀类型
+suffix_js=".js"
+suffix_css=".css"
+suffix_html=".html"
+suffix_php=".php"
+suffix_java=".java"
+suffix_py=".py"
+suffix_sql=".sql"
+suffix_json=".json"
+suffix_txt=".txt"
+suffix_config=".config"
+suffix_ts=".ts"
+suffix_md=".md"
+
+
+function readfile ()
+{
+	OLD_IFS="$IFS" 
+	IFS=" " 
+	arr=($file_path) 
+	IFS="$OLD_IFS" 
+	for s in ${arr[@]} 
+	do 
+		#echo $s | grep '.txt$'
+		#echo "------>>>>>>"$s
+		#echo $copyright >>$project_path"/"$s
+		#cat - $project_path"/"$s <<< $copyright |grep "$"
+		
+		#sed -i "1i\Copyright (C) DICP-CMC Innovation Institute of Medicine."  $project_path/$s
+		
+		
+		#############################################
+	    #################   js  #####################
+	    #############################################
+	    result_js=$(echo $s | grep "${suffix_js}")
+		if [[ "$result_js" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\//$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   css  #####################
+	    #############################################
+	    result_css=$(echo $s | grep "${suffix_css}")
+		if [[ "$result_css" != "" ]]
+		then
+			echo $project_path/$s 
+			sed -i "1i\/*$copyright*/"  $project_path/$s
+		fi
+	    #############################################
+	    #################   html  #####################
+	    #############################################
+	    result_html=$(echo $s | grep "${suffix_html}")
+		if [[ "$result_html" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\<!--$copyright-->"  $project_path/$s
+		fi
+	    #############################################
+	    #################   php  #####################
+	    #############################################
+	    result_php=$(echo $s | grep "${suffix_php}")
+		if [[ "$result_php" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\//$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   java  #####################
+	    #############################################
+	    result_java=$(echo $s | grep "${suffix_java}")
+		if [[ "$result_java" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\//$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   py  #####################
+	    #############################################
+	    result_py=$(echo $s | grep "${suffix_py}")
+		if [[ "$result_py" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\#$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   sql  #####################
+	    #############################################
+	    result_sql=$(echo $s | grep "${suffix_sql}")
+		if [[ "$result_sql" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\--$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   json  #####################
+	    #############################################
+	    result_json=$(echo $s | grep "${suffix_json}")
+		if [[ "$result_json" != "" ]]
+		then
+			echo $project_path/$s 
+			echo $s"添加的文件头异常!"
+		fi
+	    #############################################
+	    #################   txt  #####################
+	    #############################################
+	    result_txt=$(echo $s | grep "${suffix_txt}")
+		if [[ "$result_txt" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\#$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   config  #################
+	    #############################################
+	    result_config=$(echo $s | grep "${suffix_config}")
+		if [[ "$config" != "" ]]
+		then
+			echo $project_path/$s 
+			sed -i "1i\#$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   ts  #####################
+	    #############################################
+	    result_ts=$(echo $s | grep "${suffix_ts}")
+		if [[ "$result_ts" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\//$copyright"  $project_path/$s
+		fi
+	    #############################################
+	    #################   md  #####################
+	    #############################################
+	    result_md=$(echo $s | grep "${suffix_md}")
+		if [[ "$result_md" != "" ]]
+		then
+			echo $project_path/$s
+			sed -i "1i\#$copyright"  $project_path/$s
+		fi
+	
+	done
+}
+
+###############################################
+####     判断gitCache是否包含文件头     #######
+###############################################
+if [[ $cached == *$copyright* ]]
+then
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "-------Copyright has been added.-------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+  exit 0
+###正常退出
+else 
+  #配置扫描文件路径
+	echo "----------------以下文件已添加版权信息-------------------"
+	folder=$project_path
+	readfile $folder   
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "-------please readd and recommit-------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	
+  exit -1
+fi

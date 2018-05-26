@@ -1,0 +1,193 @@
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+#添加的文件头
+copyright="Copyright (C) DICP-CMC Innovation Institute of Medicine."
+
+#暂存区于服务器比较是否包含：Copyright (C) DICP-CMC Innovation Institute of Medicine.
+#has_copyright=$(git diff --cached | grep "${copyright}")
+cached=$(git diff --cached)
+
+#项目根目录
+project_path="E://F//gitHooks//addWebhook"  
+
+#扫描文件后缀类型
+suffix_js=".js"
+suffix_css=".css"
+suffix_html=".html"
+suffix_php=".php"
+suffix_java=".java"
+suffix_py=".py"
+suffix_sql=".sql"
+suffix_json=".json"
+suffix_txt=".txt"
+suffix_config=".config"
+suffix_ts=".ts"
+suffix_md=".md"
+
+
+function readfile ()
+{
+  for file in `ls $1`
+  do
+    if [ -d $1"/"$file ]
+    then
+	#如果子文件夹则递归
+      readfile $1"/"$file
+    else
+	#文件的地址
+    #echo $1"/"$file 
+	
+	#读取该文件的文件名，basename是提取文件名的关键字
+    #echo `basename $file`
+    #将$copyright添加到指定文件中
+   #sed -i "1i\Copyright (C) DICP-CMC Innovation Institute of Medicine."  $1"/"$file
+   
+   #############################################
+   #################   js  #####################
+   #############################################
+   result_js=$(echo $file | grep "${suffix_js}")
+	if [[ "$result_js" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\//$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   css  #####################
+   #############################################
+   result_css=$(echo $file | grep "${suffix_css}")
+	if [[ "$result_css" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\/*$copyright*/"  $1"/"$file
+	fi
+   #############################################
+   #################   html  #####################
+   #############################################
+   result_html=$(echo $file | grep "${suffix_html}")
+	if [[ "$result_html" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\<!--$copyright-->"  $1"/"$file
+	fi
+   #############################################
+   #################   php  #####################
+   #############################################
+   result_php=$(echo $file | grep "${suffix_php}")
+	if [[ "$result_php" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\//$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   java  #####################
+   #############################################
+   result_java=$(echo $file | grep "${suffix_java}")
+	if [[ "$result_java" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\//$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   py  #####################
+   #############################################
+   result_py=$(echo $file | grep "${suffix_py}")
+	if [[ "$result_py" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\#$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   sql  #####################
+   #############################################
+   result_sql=$(echo $file | grep "${suffix_sql}")
+	if [[ "$result_sql" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\--$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   json  #####################
+   #############################################
+   result_json=$(echo $file | grep "${suffix_json}")
+	if [[ "$result_json" != "" ]]
+	then
+		echo $1"/"$file 
+		echo $file"添加的文件头异常!"
+	fi
+   #############################################
+   #################   txt  #####################
+   #############################################
+   result_txt=$(echo $file | grep "${suffix_txt}")
+	if [[ "$result_txt" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\#$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   config  #####################
+   #############################################
+   result_config=$(echo $file | grep "${suffix_config}")
+	if [[ "$config" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\#$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   ts  #####################
+   #############################################
+   result_ts=$(echo $file | grep "${suffix_ts}")
+	if [[ "$result_ts" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\//$copyright"  $1"/"$file
+	fi
+   #############################################
+   #################   md  #####################
+   #############################################
+   result_md=$(echo $file | grep "${suffix_md}")
+	if [[ "$result_md" != "" ]]
+	then
+		echo $1"/"$file 
+		sed -i "1i\#$copyright"  $1"/"$file
+	fi
+   fi
+  done
+}
+
+###############################################
+####     判断gitCache是否包含文件头     #######
+###############################################
+
+if [[ $cached == *$copyright* ]]
+then
+echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "-------Copyright has been added.-------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+  exit 0
+###正常退出
+else 
+  	#配置扫描文件路径
+	echo "----------------以下文件已添加版权信息-------------------"
+	folder=$project_path
+	readfile $folder   
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "-------please readd and recommit-------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+	echo "---------------------------------------"
+  exit -1
+fi
+
